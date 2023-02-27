@@ -1,0 +1,8 @@
+.window {
+    height: 650px;
+    width: 556px;
+    background-color: hsl(0, 0%, 75%);
+    border-radius: 4px;
+    padding: 17px;
+    margin: 0 auto;
+}

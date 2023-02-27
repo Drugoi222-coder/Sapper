@@ -1,0 +1,7 @@
+.counter {
+    height: 45px;
+}
+
+.counter__digit {
+    height: 100%;
+}

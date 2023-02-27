@@ -1,0 +1,10 @@
+.smile-btn {
+    border : none;
+    background: none;
+    cursor: pointer;
+    height: 50px;
+}
+
+.smile-btn__img {
+    height: 100%;
+}

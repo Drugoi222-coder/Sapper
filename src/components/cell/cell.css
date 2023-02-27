@@ -1,0 +1,9 @@
+.cell {
+    cursor: pointer;
+    width: 6.25%;
+}
+
+.cell__img {
+    width: 100%;
+    height: 100%;
+}
