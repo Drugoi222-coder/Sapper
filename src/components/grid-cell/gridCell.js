@@ -1,25 +1,20 @@
 import './grid-cell.css';
-import Row from '../row/row';
+import { useEffect, useContext } from 'react';
+import { GameInfo } from "../game-info/gameInfo";
+
 
 const GridCell = () => {
+    const { state, changers } = useContext(GameInfo);
+    const { rows } = state;
+    const { generateRows } = changers;
+
+    useEffect(() => {
+        generateRows();
+    },[]);
+
     return (
         <div className="grid-cell">
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
-            <Row/>
+            {rows}
         </div>
     )
 }

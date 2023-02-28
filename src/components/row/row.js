@@ -1,27 +1,21 @@
-import './row.css';
-import Cell from '../cell/cell';
+import "./row.css";
+import { useEffect, useState } from "react";
 
-const Row = () => {
+const Row = (props) => {
+    const { ind, generateCells } = props;
+    const [cells, setCells] = useState([]);
+
+    useEffect(() => {
+        setCells(prev => ([
+            ...generateCells(ind)
+        ]));
+    }, [generateCells, ind]);
+
     return (
         <div className="row">
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
+            {cells}
         </div>
-    )
-}
+    );
+};
 
 export default Row;

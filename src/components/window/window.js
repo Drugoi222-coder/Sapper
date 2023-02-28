@@ -3,25 +3,78 @@ import Header from "../header/header";
 import Main from "../main/main";
 import { useEffect, useState } from "react";
 import { GameInfo } from "../game-info/gameInfo";
+import images from "../images/images";
+import Cell from "../cell/cell";
+import Row from "../row/row";
 
 const Window = () => {
+    const { smiles } = images;
     const [isStarted, setStart] = useState(false);
     const [seconds, setSeconds] = useState(0);
+    const [isClicked, setClicked] = useState(false);
     const [time, setTime] = useState(0);
-    const [activeCells, setActiveCells] = useState(false);
     const [bombs, setBombs] = useState(0);
     const [bombsCount, setBombsCount] = useState({});
+    const [smileSrc, setSmileSrc] = useState(smiles.start);
+    const [rows, setRows] = useState([]);
+    const [firstClicked, setFirstClicked] = useState([]);
+    const [bombsInCells, setBombsInCells] = useState(0);
+    const [minesArr, setMinesArr] = useState([]);
+
+    const generateMines = (exceptIndex = -1) => {
+        const arr = new Array(256).fill(0);
+        let count = 0;
+        while (count < 40 && exceptIndex) {
+            const i = Math.floor(Math.random() * 256);
+            if (arr[i] === 0 && i !== exceptIndex) {
+                arr[i] = 1;
+                count++;
+            }
+        }
+        const arrAround = [arr[exceptIndex - 17], arr[exceptIndex - 16] , arr[exceptIndex - 15],
+                            arr[exceptIndex - 1], arr[exceptIndex], arr[exceptIndex + 1],
+                            arr[exceptIndex + 15], arr[exceptIndex + 16], arr[exceptIndex + 17]];
+        setMinesArr([...arr]);
+        return arrAround.reduce((a,b) => a + b) - 1;
+    };
+
+    const generateCells = (ind) => {
+        const cells = [];
+        for (let i = 0; i < 16; i++) {
+            cells[i] = <Cell rowInd={ind} ind={i} key={i} />;
+        }
+        return [...cells];
+    };
+
+    const generateRows = () => {
+        const rowsArr = [];
+        for (let i = 0; i < 16; i++){
+            rowsArr[i] = <Row ind={i} key={i} generateCells={generateCells}/>;
+        }
+        setRows(() => ([...rowsArr]));
+    }
+
 
     const gameInfoObject = {
         state: {
             isStarted,
             bombs,
             seconds,
-            activeCells
+            smileSrc,
+            isClicked,
+            bombsInCells,
+            rows,
+            firstClicked,
+            minesArr
         },
         changers: {
-            setActiveCells,
+            setBombsInCells,
             setBombs,
+            setSmileSrc,
+            setClicked,
+            generateRows,
+            generateMines,
+            setFirstClicked
         },
     };
 
