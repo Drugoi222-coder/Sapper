@@ -2,57 +2,68 @@ import "./cell.css";
 import images from "../images/images";
 import { useState, useContext, useEffect } from "react";
 import { GameInfo } from "../game-info/gameInfo";
+import { act } from "react-dom/test-utils";
 
 const Cell = (props) => {
     const { ind, rowInd } = props;
-    const [ activeIndex, setActiveIndex ] = useState();
     const { cells, smiles, bombs: bombsImgs, bombCount } = images;
-    const [cellInfo, setCellInfo] = useState({
+    const [ cellInfo, setCellInfo ] = useState({
         src: cells.cell,
         index: rowInd * 16 + ind,
     });
     const { state, changers } = useContext(GameInfo);
-    const { isStarted, bombs, isClicked, rows, minesArr } = state;
-    const { setBombs, setSmileSrc, setClicked, generateMines } = changers;
+    const {
+        isStarted,
+        bombs,
+        isClicked,
+        rows,
+        minesArr,
+        bombsAround,
+        activeIndex
+    } = state;
+    const {
+        setBombs,
+        setSmileSrc,
+        setClicked,
+        generateMines,
+        calcBombsAround,
+        setActiveIndex,
+        openAroundCells
+    } = changers;
 
     const isInitial = () => {
         if (isStarted) {
             setCellInfo((prev) => ({
                 ...prev,
                 src: cells.cell,
-                flag: false
+                flag: false,
             }));
         }
     };
 
-    const calcBombsAround = () => {
-        let middleRow = cellInfo.index;
-        let firstRow = cellInfo.index - 16;
-        let lastRow = cellInfo.index + 16;
-        let arrIndexesCells = [firstRow - 1, firstRow, firstRow + 1,
-                                middleRow - 1, middleRow, middleRow + 1,
-                                lastRow - 1, lastRow, lastRow + 1];
-        arrIndexesCells = arrIndexesCells.map(item => minesArr[item]);
-        return arrIndexesCells.reduce((a,b) => a + b);
-    }
+    const setBombCount = (bombsValue) => {
+        if (bombsValue === -1) {
+            setCellInfo((prev) => ({
+                ...prev,
+                src: cells.emptycell,
+            }));
+        } else {
+            setCellInfo((prev) => ({
+                ...prev,
+                src: bombCount[bombsValue - 1],
+            }));
+        }
+    };
 
     const changeCellImg = (e) => {
-        if (isStarted && (cellInfo.flag === "flag" || cellInfo.flag === "question")) {
+        if (
+            isStarted &&
+            (cellInfo.flag === "flag" || cellInfo.flag === "question")
+        ) {
             e.preventDefault();
         } else if (!isClicked && isStarted) {
-            setActiveIndex(cellInfo.index);
-            let bombs = generateMines(cellInfo.index);
-            if (bombs === -1) {
-                setCellInfo((prev) => ({
-                    ...prev,
-                    src: cells.emptycell,
-                }));
-            } else {
-                setCellInfo((prev) => ({
-                    ...prev,
-                    src: bombCount[bombs],
-                }));
-            }
+            generateMines(cellInfo.index);
+            setBombCount(bombsAround);
             setClicked(true);
         } else if (isStarted) {
             if (minesArr[cellInfo.index] === 1) {
@@ -61,18 +72,9 @@ const Cell = (props) => {
                     src: bombsImgs.explode,
                 }));
             } else {
-                let bombs = calcBombsAround();
-                if (bombs === 0) {
-                    setCellInfo((prev) => ({
-                        ...prev,
-                        src: cells.emptycell,
-                    }));
-                } else {
-                    setCellInfo((prev) => ({
-                        ...prev,
-                        src: bombCount[bombs - 1],
-                    }));
-                }
+                setActiveIndex(() => cellInfo.index);
+                let bombs = calcBombsAround(cellInfo.index);
+                setBombCount(bombs);
             }
         }
     };
@@ -117,6 +119,15 @@ const Cell = (props) => {
             setSmileSrc(smiles.start);
         }
     };
+
+    useEffect(() => {
+        const toOpenCells = openAroundCells(activeIndex);
+        const bombsCountActive = calcBombsAround(activeIndex);
+        if (toOpenCells.has(cellInfo.index) && minesArr[cellInfo.index] !== 1 && bombsCountActive === -1) {
+            let bombsAround = calcBombsAround(cellInfo.index);
+            setBombCount(bombsAround);
+        }
+    }, [activeIndex]);
 
     useEffect(() => {
         isInitial();
