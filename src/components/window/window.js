@@ -17,12 +17,12 @@ const Window = () => {
     const [bombsCount, setBombsCount] = useState({});
     const [smileSrc, setSmileSrc] = useState(smiles.start);
     const [rows, setRows] = useState([]);
-    const [firstClicked, setFirstClicked] = useState([]);
     const [bombsInCells, setBombsInCells] = useState(0);
     const [minesArr, setMinesArr] = useState([]);
     const [bombsAround, setBombsAround] = useState(0);
     const [exceptIndex, setExceptIndex] = useState();
     const [activeIndex, setActiveIndex] = useState();
+    const [intervalTime, setIntervalTime] = useState(0);
 
     const arrIndexesAround = (index) => {
         const firstRowIndex = index - 16 >= 0 ? index - 16 : -100;
@@ -60,24 +60,25 @@ const Window = () => {
     }
 
     const openAroundCells = (index) => {
-        const wholeEmpties = [];
-        const lastIndex = [];
+        const wholeEmpties = new Set();
+        const lastIndex = new Set();
     
         const createWholeEmptities = (index) => {
             const cellsAround = arrIndexesAround(index).filter(item => item >= 0);
             for (let i = 0; i < cellsAround.length; i++) {
                 let bombs = calcBombsAround(cellsAround[i]);
         
-                if (bombs === -1 && !lastIndex.includes(cellsAround[i])) {
-                    lastIndex.push(cellsAround[i]);
+                if (bombs === -1 && !lastIndex.has(cellsAround[i])) {
+                    lastIndex.add(cellsAround[i]);
                     createWholeEmptities(cellsAround[i]);
                 } else {
-                    wholeEmpties.push(cellsAround[i]);
+                    wholeEmpties.add(cellsAround[i]);
                 }
             }
         };
+
         createWholeEmptities(index);
-        const flatWholeEmptities = new Set(wholeEmpties.sort((a,b) => a - b));
+        const flatWholeEmptities = new Set(Array.from(wholeEmpties).sort((a,b) => a - b));
         return flatWholeEmptities;
     };
 
@@ -129,7 +130,6 @@ const Window = () => {
             bombsInCells,
             rows,
             bombsAround,
-            firstClicked,
             minesArr,
             exceptIndex,
             activeIndex
@@ -141,21 +141,18 @@ const Window = () => {
             setClicked,
             generateRows,
             generateMines,
-            setFirstClicked,
             calcBombsAround,
             setActiveIndex,
-            openAroundCells
+            openAroundCells,
+            setStart,
         },
     };
 
     const handleSeconds = () => {
-        const plusSecond = setInterval(() => {
+        const interval = setInterval(() => {
             setSeconds((prev) => prev + 1);
         }, 1000);
-        if (plusSecond && isStarted) {
-            clearInterval(plusSecond);
-            setSeconds(0);
-        }
+        return interval;
     };
 
     const countTime = () => {
@@ -184,11 +181,34 @@ const Window = () => {
         }));
     };
 
+    const clearIntervalTime = () => {
+        setIntervalTime(() => {
+            clearInterval(intervalTime);
+            return 0;
+        });
+    }
+
     useEffect(() => {
         if (!isClicked) {
+            setExceptIndex(undefined);
             setActiveIndex(undefined);
         }
-    },[isClicked])
+    },[isClicked]);
+
+    useEffect(() => {
+        if (isStarted && isClicked) {
+            clearIntervalTime();
+            setSeconds(0);
+            setIntervalTime(handleSeconds());
+        } else {
+            if (!isStarted) {
+                clearIntervalTime();
+            } else {
+                clearIntervalTime();
+                setSeconds(0);
+            }
+        }
+    }, [isClicked, isStarted]);
 
     useEffect(() => {
         setActiveIndex(exceptIndex);

@@ -2,25 +2,18 @@ import "./cell.css";
 import images from "../images/images";
 import { useState, useContext, useEffect } from "react";
 import { GameInfo } from "../game-info/gameInfo";
-import { act } from "react-dom/test-utils";
 
 const Cell = (props) => {
     const { ind, rowInd } = props;
     const { cells, smiles, bombs: bombsImgs, bombCount } = images;
-    const [ cellInfo, setCellInfo ] = useState({
+    const [cellInfo, setCellInfo] = useState({
         src: cells.cell,
         index: rowInd * 16 + ind,
     });
+    const [lastIndex, setLastIndex] = useState(undefined);
     const { state, changers } = useContext(GameInfo);
-    const {
-        isStarted,
-        bombs,
-        isClicked,
-        rows,
-        minesArr,
-        bombsAround,
-        activeIndex
-    } = state;
+    const { isStarted, bombs, isClicked, minesArr, bombsAround, activeIndex } =
+        state;
     const {
         setBombs,
         setSmileSrc,
@@ -28,11 +21,12 @@ const Cell = (props) => {
         generateMines,
         calcBombsAround,
         setActiveIndex,
-        openAroundCells
+        openAroundCells,
+        setStart,
     } = changers;
 
     const isInitial = () => {
-        if (isStarted) {
+        if (isStarted && !isClicked) {
             setCellInfo((prev) => ({
                 ...prev,
                 src: cells.cell,
@@ -71,6 +65,10 @@ const Cell = (props) => {
                     ...prev,
                     src: bombsImgs.explode,
                 }));
+                setStart(false);
+                setSmileSrc(smiles.loose);
+                setClicked(false);
+                setLastIndex(cellInfo.index);
             } else {
                 setActiveIndex(() => cellInfo.index);
                 let bombs = calcBombsAround(cellInfo.index);
@@ -83,7 +81,7 @@ const Cell = (props) => {
         if (isStarted || cellInfo.flag === "noflag") {
             e.preventDefault();
         }
-        if (isStarted && !cellInfo.flag) {
+        if (isStarted && !cellInfo.flag && cellInfo.src !== cells.emptycell) {
             if (bombs > 0) {
                 setBombs((prev) => prev - 1);
                 setCellInfo((prev) => ({
@@ -123,7 +121,13 @@ const Cell = (props) => {
     useEffect(() => {
         const toOpenCells = openAroundCells(activeIndex);
         const bombsCountActive = calcBombsAround(activeIndex);
-        if (toOpenCells.has(cellInfo.index) && minesArr[cellInfo.index] !== 1 && bombsCountActive === -1) {
+        if (
+            toOpenCells.has(cellInfo.index) &&
+            minesArr[cellInfo.index] !== 1 &&
+            bombsCountActive === -1 &&
+            cellInfo.flag !== "flag" &&
+            cellInfo.flag !== "question"
+        ) {
             let bombsAround = calcBombsAround(cellInfo.index);
             setBombCount(bombsAround);
         }
@@ -131,7 +135,25 @@ const Cell = (props) => {
 
     useEffect(() => {
         isInitial();
-    }, [rows]);
+        if (!isStarted && !isClicked && minesArr.length > 0) {
+            const mines = new Set(
+                minesArr
+                    .map((item, index) => (item === 1 ? index : ""))
+                    .filter((item) => item)
+            );
+            if (mines.has(cellInfo.index) && lastIndex !== cellInfo.index && cellInfo.flag !== "flag") {
+                setCellInfo((prev) => ({
+                    ...prev,
+                    src: bombsImgs.bombOpened,
+                }));
+            } else if (!mines.has(cellInfo.index) && cellInfo.flag === "flag") {
+                setCellInfo((prev) => ({
+                    ...prev,
+                    src: bombsImgs.wrong,
+                }));
+            }
+        }
+    }, [isStarted, isClicked]);
 
     return (
         <div className="cell">

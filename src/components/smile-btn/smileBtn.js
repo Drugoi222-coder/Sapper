@@ -5,14 +5,13 @@ import { GameInfo } from "../game-info/gameInfo";
 
 const SmileBtn = (props) => {
     const { smiles } = images;
-    const { setStart, handleTime } = props;
+    const { setStart } = props;
     const { state, changers } = useContext(GameInfo);
     const {
         setBombs,
         setSmileSrc,
         setClicked,
         generateRows,
-        setFirstClicked,
     } = changers;
     const { isStarted, smileSrc } = state;
 
@@ -22,23 +21,29 @@ const SmileBtn = (props) => {
     };
 
     const onMouseUp = () => {
-        if (!isStarted) {
-            setBombs(40);
-            handleTime();
-            setStart(true);
-        } else if (isStarted) {
-            setFirstClicked([]);
-            setClicked(false);
-            setBombs(40);
-            handleTime();
-        }
         setSmileSrc(smiles.start);
     };
+
+    const reStart = () => {
+        setStart(prev => !prev);
+        setStart(prev => !prev);
+    }
+
+    const handleClick = () => {
+        setBombs(40);
+        if (!isStarted) {
+            setStart(true);
+        } else if (isStarted) {
+            reStart();
+            setClicked(false);
+        }
+    }
 
     return (
         <button
             onMouseUp={onMouseUp}
             onMouseDown={onMouseDown}
+            onClick={handleClick}
             className="smile-btn"
         >
             <img src={smileSrc} alt="Smile state" className="smile-btn__img" />
