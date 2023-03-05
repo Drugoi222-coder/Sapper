@@ -6,7 +6,7 @@ const Row = (props) => {
     const [cells, setCells] = useState([]);
 
     useEffect(() => {
-        setCells(prev => ([
+        setCells(() => ([
             ...generateCells(ind)
         ]));
     }, [generateCells, ind]);

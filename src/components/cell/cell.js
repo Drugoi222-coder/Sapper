@@ -18,6 +18,7 @@ const Cell = (props) => {
         isClicked,
         minesArr,
         bombsAround,
+        empty,
         activeIndex,
     } = state;
     const {
@@ -29,7 +30,6 @@ const Cell = (props) => {
         setActiveIndex,
         openAroundCells,
         setStart,
-        setBombs,
         setEmpty
     } = changers;
 
@@ -103,9 +103,6 @@ const Cell = (props) => {
             cellInfo.src !== cells.emptycell &&
             !bombCount.includes(cellInfo.src)
         ) {
-            if (minesArr[cellInfo.index] === 1) {
-                setBombs((prev) => prev + 1);
-            }
             setFlags((prev) => prev - 1);
             setCellInfo((prev) => ({
                 ...prev,
@@ -119,9 +116,6 @@ const Cell = (props) => {
                 flag: "question",
             }));
         } else if (isStarted && cellInfo.flag === "question") {
-            if (minesArr[cellInfo.index] === 1) {
-                setBombs((prev) => prev - 1);
-            }
             setFlags((prev) => prev + 1);
             setCellInfo((prev) => ({
                 ...prev,
@@ -158,11 +152,11 @@ const Cell = (props) => {
             let bombsAround = calcBombsAround(cellInfo.index);
             setBombCount(bombsAround);
         }
-    }, [activeIndex]);  
+    }, [activeIndex]);
 
     useEffect(() => {
         isInitial();
-        if (!isStarted && !isClicked && minesArr.length > 0) {
+        if (!isStarted && !isClicked && minesArr.length > 0 && empty < 215) {
             const mines = new Set(
                 minesArr
                     .map((item, index) => (item === 1 ? index : ""))

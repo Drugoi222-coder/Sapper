@@ -131,6 +131,7 @@ const Window = () => {
             bombsInCells,
             rows,
             bombsAround,
+            empty,
             minesArr,
             exceptIndex,
             activeIndex,
@@ -192,8 +193,8 @@ const Window = () => {
 
     useEffect(() => {
         if (empty === 215) {
-            setClicked(false);
             setStart(false);
+            setClicked(false);
             clearIntervalTime();
             setSmileSrc(smiles.win);
         }
