@@ -13,7 +13,7 @@ const Window = () => {
     const [seconds, setSeconds] = useState(0);
     const [isClicked, setClicked] = useState(false);
     const [time, setTime] = useState(0);
-    const [bombs, setBombs] = useState(0);
+    const [flags, setFlags] = useState(0);
     const [bombsCount, setBombsCount] = useState({});
     const [smileSrc, setSmileSrc] = useState(smiles.start);
     const [rows, setRows] = useState([]);
@@ -23,6 +23,7 @@ const Window = () => {
     const [exceptIndex, setExceptIndex] = useState();
     const [activeIndex, setActiveIndex] = useState();
     const [intervalTime, setIntervalTime] = useState(0);
+    const [empty, setEmpty] = useState(0);
 
     const arrIndexesAround = (index) => {
         const firstRowIndex = index - 16 >= 0 ? index - 16 : -100;
@@ -123,7 +124,7 @@ const Window = () => {
     const gameInfoObject = {
         state: {
             isStarted,
-            bombs,
+            flags,
             seconds,
             smileSrc,
             isClicked,
@@ -132,11 +133,11 @@ const Window = () => {
             bombsAround,
             minesArr,
             exceptIndex,
-            activeIndex
+            activeIndex,
         },
         changers: {
             setBombsInCells,
-            setBombs,
+            setFlags,
             setSmileSrc,
             setClicked,
             generateRows,
@@ -144,6 +145,7 @@ const Window = () => {
             calcBombsAround,
             setActiveIndex,
             openAroundCells,
+            setEmpty,
             setStart,
         },
     };
@@ -169,7 +171,7 @@ const Window = () => {
     };
 
     const countBombs = () => {
-        let bombsArr = String(bombs)
+        let bombsArr = String(flags)
             .split("")
             .reverse()
             .map((item) => +item);
@@ -187,6 +189,15 @@ const Window = () => {
             return 0;
         });
     }
+
+    useEffect(() => {
+        if (empty >= 21) {
+            setClicked(false);
+            setStart(false);
+            clearIntervalTime();
+            setSmileSrc(smiles.win);
+        }
+    }, [empty]);
 
     useEffect(() => {
         if (!isClicked) {
@@ -218,7 +229,7 @@ const Window = () => {
 
     useEffect(() => {
         countBombs();
-    }, [bombs]);
+    }, [flags]);
 
     useEffect(() => {
         countTime();

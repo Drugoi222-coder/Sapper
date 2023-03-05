@@ -8,10 +8,11 @@ const SmileBtn = (props) => {
     const { setStart } = props;
     const { state, changers } = useContext(GameInfo);
     const {
-        setBombs,
+        setFlags,
         setSmileSrc,
         setClicked,
         generateRows,
+        setEmpty
     } = changers;
     const { isStarted, smileSrc } = state;
 
@@ -30,7 +31,8 @@ const SmileBtn = (props) => {
     }
 
     const handleClick = () => {
-        setBombs(40);
+        setFlags(40);
+        setEmpty(0);
         if (!isStarted) {
             setStart(true);
         } else if (isStarted) {

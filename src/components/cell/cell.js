@@ -12,10 +12,16 @@ const Cell = (props) => {
     });
     const [lastIndex, setLastIndex] = useState(undefined);
     const { state, changers } = useContext(GameInfo);
-    const { isStarted, bombs, isClicked, minesArr, bombsAround, activeIndex } =
-        state;
     const {
-        setBombs,
+        isStarted,
+        flags,
+        isClicked,
+        minesArr,
+        bombsAround,
+        activeIndex,
+    } = state;
+    const {
+        setFlags,
         setSmileSrc,
         setClicked,
         generateMines,
@@ -23,6 +29,8 @@ const Cell = (props) => {
         setActiveIndex,
         openAroundCells,
         setStart,
+        setBombs,
+        setEmpty
     } = changers;
 
     const isInitial = () => {
@@ -70,6 +78,9 @@ const Cell = (props) => {
                 setClicked(false);
                 setLastIndex(cellInfo.index);
             } else {
+                if (cellInfo.src === cells.cell) {
+                    setEmpty(prev => prev + 1);
+                }
                 setActiveIndex(() => cellInfo.index);
                 let bombs = calcBombsAround(cellInfo.index);
                 setBombCount(bombs);
@@ -81,15 +92,22 @@ const Cell = (props) => {
         if (isStarted || cellInfo.flag === "noflag") {
             e.preventDefault();
         }
-        if (isStarted && !cellInfo.flag && cellInfo.src !== cells.emptycell) {
-            if (bombs > 0) {
-                setBombs((prev) => prev - 1);
-                setCellInfo((prev) => ({
-                    ...prev,
-                    src: cells.flag,
-                    flag: "flag",
-                }));
+        if (
+            isStarted &&
+            !cellInfo.flag &&
+            flags > 0 &&
+            cellInfo.src !== cells.emptycell &&
+            !bombCount.includes(cellInfo.src)
+        ) {
+            if (minesArr[cellInfo.index] === 1) {
+                setBombs((prev) => prev + 1);
             }
+            setFlags((prev) => prev - 1);
+            setCellInfo((prev) => ({
+                ...prev,
+                src: cells.flag,
+                flag: "flag",
+            }));
         } else if (isStarted && cellInfo.flag === "flag") {
             setCellInfo((prev) => ({
                 ...prev,
@@ -97,7 +115,10 @@ const Cell = (props) => {
                 flag: "question",
             }));
         } else if (isStarted && cellInfo.flag === "question") {
-            setBombs((prev) => prev + 1);
+            if (minesArr[cellInfo.index] === 1) {
+                setBombs((prev) => prev - 1);
+            }
+            setFlags((prev) => prev + 1);
             setCellInfo((prev) => ({
                 ...prev,
                 src: cells.cell,
@@ -126,12 +147,23 @@ const Cell = (props) => {
             minesArr[cellInfo.index] !== 1 &&
             bombsCountActive === -1 &&
             cellInfo.flag !== "flag" &&
-            cellInfo.flag !== "question"
+            cellInfo.flag !== "question" &&
+            cellInfo.src === cells.cell
         ) {
+            setEmpty(prev => prev + 1);
             let bombsAround = calcBombsAround(cellInfo.index);
             setBombCount(bombsAround);
         }
     }, [activeIndex]);
+
+    useEffect(() => {
+        if (minesArr[cellInfo.index] === 1) {
+            setCellInfo((prev) => ({
+                ...prev,
+                src: bombsImgs.bombOpened,
+            }));
+        }
+    }, [minesArr]);
 
     useEffect(() => {
         isInitial();
@@ -139,9 +171,13 @@ const Cell = (props) => {
             const mines = new Set(
                 minesArr
                     .map((item, index) => (item === 1 ? index : ""))
-                    .filter((item) => item)
+                    .filter((item) => item >= 0)
             );
-            if (mines.has(cellInfo.index) && lastIndex !== cellInfo.index && cellInfo.flag !== "flag") {
+            if (
+                mines.has(cellInfo.index) &&
+                lastIndex !== cellInfo.index &&
+                cellInfo.flag !== "flag"
+            ) {
                 setCellInfo((prev) => ({
                     ...prev,
                     src: bombsImgs.bombOpened,
