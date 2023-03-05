@@ -67,6 +67,10 @@ const Cell = (props) => {
             generateMines(cellInfo.index);
             setBombCount(bombsAround);
             setClicked(true);
+            setCellInfo((prev) => ({
+                ...prev,
+                src: cells.emptycell,
+            }));
         } else if (isStarted) {
             if (minesArr[cellInfo.index] === 1) {
                 setCellInfo((prev) => ({
