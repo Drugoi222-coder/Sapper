@@ -191,7 +191,7 @@ const Window = () => {
     }
 
     useEffect(() => {
-        if (empty >= 21) {
+        if (empty === 215) {
             setClicked(false);
             setStart(false);
             clearIntervalTime();

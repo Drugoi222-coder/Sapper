@@ -154,16 +154,7 @@ const Cell = (props) => {
             let bombsAround = calcBombsAround(cellInfo.index);
             setBombCount(bombsAround);
         }
-    }, [activeIndex]);
-
-    useEffect(() => {
-        if (minesArr[cellInfo.index] === 1) {
-            setCellInfo((prev) => ({
-                ...prev,
-                src: bombsImgs.bombOpened,
-            }));
-        }
-    }, [minesArr]);
+    }, [activeIndex]);  
 
     useEffect(() => {
         isInitial();
