@@ -159,16 +159,25 @@ const Window = () => {
     };
 
     const countTime = () => {
-        let secondsArr = String(seconds)
-            .split("")
-            .reverse()
-            .map((item) => +item);
-        setTime((prev) => ({
-            ...prev,
-            units: secondsArr[0] || 0,
-            dozens: secondsArr[1] || 0,
-            hundreds: secondsArr[2] || 0,
-        }));
+        if (seconds < 1000) {
+            let secondsArr = String(seconds)
+                .split("")
+                .reverse()
+                .map((item) => +item);
+            setTime((prev) => ({
+                ...prev,
+                units: secondsArr[0] || 0,
+                dozens: secondsArr[1] || 0,
+                hundreds: secondsArr[2] || 0,
+            }));
+        } else {
+            setTime((prev) => ({
+                ...prev,
+                units: 9,
+                dozens: 9,
+                hundreds: 9,
+            }));
+        }
     };
 
     const countBombs = () => {

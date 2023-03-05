@@ -35,6 +35,7 @@ const Cell = (props) => {
 
     const isInitial = () => {
         if (isStarted && !isClicked) {
+            setLastIndex(undefined);
             setCellInfo((prev) => ({
                 ...prev,
                 src: cells.cell,
