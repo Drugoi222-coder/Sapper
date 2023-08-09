@@ -1,45 +1,17 @@
 import "./smile-btn.css";
 import images from "../images/images";
-import { useContext } from "react";
-import { GameInfo } from "../game-info/gameInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { startGame, setSmileIcon } from "../window/windowSlice";
 
-const SmileBtn = (props) => {
-    const { smiles } = images;
-    const { setStart } = props;
-    const { state, changers } = useContext(GameInfo);
-    const {
-        setFlags,
-        setSmileSrc,
-        setClicked,
-        generateRows,
-        setEmpty
-    } = changers;
-    const { isStarted, smileSrc } = state;
+const { smiles } = images;
 
-    const onMouseDown = () => {
-        generateRows();
-        setSmileSrc(smiles.startPressed);
-    };
+const SmileBtn = () => {
+    const dispatch = useDispatch();
+    const smileIcon = useSelector((state) => state.windowState.smileImg);
 
-    const onMouseUp = () => {
-        setSmileSrc(smiles.start);
-    };
-
-    const reStart = () => {
-        setStart(prev => !prev);
-        setStart(prev => !prev);
-    }
-
-    const handleClick = () => {
-        setFlags(40);
-        setEmpty(0);
-        if (!isStarted) {
-            setStart(true);
-        } else if (isStarted) {
-            reStart();
-            setClicked(false);
-        }
-    }
+    const onMouseDown = () => dispatch(setSmileIcon(smiles.startPressed));
+    const onMouseUp = () => dispatch(setSmileIcon(smiles.start));
+    const handleClick = () => dispatch(startGame());
 
     return (
         <button
@@ -48,7 +20,7 @@ const SmileBtn = (props) => {
             onClick={handleClick}
             className="smile-btn"
         >
-            <img src={smileSrc} alt="Smile state" className="smile-btn__img" />
+            <img src={smileIcon} alt="Smile state" className="smile-btn__img" />
         </button>
     );
 };
