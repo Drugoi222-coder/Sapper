@@ -1,21 +1,20 @@
 import "./row.css";
-import { useEffect, useState } from "react";
+import Cell from "../cell/cell";
+import { useSelector } from "react-redux";
+import { selectors } from "../cell/cellsSlice";
 
-const Row = (props) => {
-    const { ind, generateCells } = props;
-    const [cells, setCells] = useState([]);
+const Row = ({ rowIndex }) => {
+    const cells = useSelector(selectors.selectAll);
 
-    useEffect(() => {
-        setCells(prev => ([
-            ...generateCells(ind)
-        ]));
-    }, [generateCells, ind]);
+    const renderCells = () => {
+        return cells.map((item) => {
+            if (item.row === rowIndex) {
+                return <Cell id={item.id} key={item.id} />;
+            }
+        });
+    };
 
-    return (
-        <div className="row">
-            {cells}
-        </div>
-    );
+    return <div className="row">{renderCells()}</div>;
 };
 
 export default Row;

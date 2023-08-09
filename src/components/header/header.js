@@ -1,17 +1,18 @@
 import "./header.css";
-import Counter from "../counter/counter";
 import SmileBtn from "../smile-btn/smileBtn";
+import withCounter from "../counter/withCounter";
+import CounterFlags from "../counter/counter-flags/counterFlags";
+import CounterTimer from "../counter/counter-timer/counterTimer";
 
-const Header = (props) => {
-    const {setStart, handleTime, time, bombsCount } = props;
+const Timer = withCounter(CounterTimer);
+const Flags = withCounter(CounterFlags);
+
+const Header = () => {
     return (
         <div className="header">
-            <Counter bombsCount={bombsCount}/>
-            <SmileBtn
-                handleTime={handleTime}
-                setStart={setStart}
-            />
-            <Counter time={time}/>
+            <Flags/>
+            <SmileBtn/>
+            <Timer/>
         </div>
     );
 };
