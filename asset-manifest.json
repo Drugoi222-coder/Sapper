@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Sapper/static/css/main.b82bb161.css",
-    "main.js": "/Sapper/static/js/main.17eb485c.js",
+    "main.css": "/Sapper/static/css/main.45ef0c08.css",
+    "main.js": "/Sapper/static/js/main.e8fad2d7.js",
     "index.html": "/Sapper/index.html",
-    "main.b82bb161.css.map": "/Sapper/static/css/main.b82bb161.css.map",
-    "main.17eb485c.js.map": "/Sapper/static/js/main.17eb485c.js.map"
+    "main.45ef0c08.css.map": "/Sapper/static/css/main.45ef0c08.css.map",
+    "main.e8fad2d7.js.map": "/Sapper/static/js/main.e8fad2d7.js.map"
   },
   "entrypoints": [
-    "static/css/main.b82bb161.css",
-    "static/js/main.17eb485c.js"
+    "static/css/main.45ef0c08.css",
+    "static/js/main.e8fad2d7.js"
   ]
 }
