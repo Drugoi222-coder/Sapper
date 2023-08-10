@@ -1,8 +1,8 @@
 import "./header.css";
-import SmileBtn from "../smile-btn/smileBtn";
+import SmileBtn from "../smile-btn/SmileBtn";
 import withCounter from "../counter/withCounter";
-import CounterFlags from "../counter/counter-flags/counterFlags";
-import CounterTimer from "../counter/counter-timer/counterTimer";
+import CounterFlags from "../counter/counter-flags/CounterFlags";
+import CounterTimer from "../counter/counter-timer/CounterTimer";
 
 const Timer = withCounter(CounterTimer);
 const Flags = withCounter(CounterFlags);

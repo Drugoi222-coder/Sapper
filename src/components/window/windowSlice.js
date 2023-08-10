@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { stages } from "../../utils/constants";
 import images from "../images/images";
-import { setClick, toggleFlag } from "../cell/cellsSlice";
+import { toggleFlag } from "../cell/cellsSlice";
 
 const { smiles, cells } = images;
 
 const initialState = {
-    stage: '',
+    stage: "",
     flagsCount: 0,
     smileImg: smiles.start,
 };
@@ -38,15 +38,10 @@ const windowSlice = createSlice({
             } else if (payload.img === cells.cell) {
                 state.flagsCount -= 1;
             }
-        })
-    }
+        });
+    },
 });
 
-export const {
-    startGame,
-    finishGame,
-    setSmileIcon,
-    looseGame,
-    winGame,
-} = windowSlice.actions;
+export const { startGame, finishGame, setSmileIcon, looseGame, winGame } =
+    windowSlice.actions;
 export default windowSlice.reducer;

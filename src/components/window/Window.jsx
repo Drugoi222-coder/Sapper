@@ -1,6 +1,6 @@
 import "./window.css";
-import Header from "../header/header";
-import Main from "../main/main";
+import Header from "../header/Header";
+import Main from "../main/Main";
 import { Provider } from "react-redux";
 import store from "../../store";
 

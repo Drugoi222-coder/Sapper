@@ -1,6 +1,6 @@
 import "./main.css";
 import { nanoid } from "@reduxjs/toolkit";
-import Row from "../row/row";
+import Row from "../row/Row";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCells } from "../cell/cellsSlice";

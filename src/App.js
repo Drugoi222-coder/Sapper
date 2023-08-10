@@ -1,4 +1,4 @@
-import Window from "./components/window/window";
+import Window from "./components/window/Window";
 
 function App() {
   return (

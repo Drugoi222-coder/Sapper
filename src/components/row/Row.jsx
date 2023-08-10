@@ -1,5 +1,5 @@
 import "./row.css";
-import Cell from "../cell/cell";
+import Cell from "../cell/Cell";
 import { useSelector } from "react-redux";
 import { selectors } from "../cell/cellsSlice";
 
