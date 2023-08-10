@@ -2,13 +2,13 @@ import { createSlice, createEntityAdapter, nanoid } from "@reduxjs/toolkit";
 import { looseGame, startGame } from "../window/windowSlice";
 import { getAroundIds, getFlatIndex } from "../../utils/utils";
 import images from "../images/images";
-
+import { COUNT_COLUMNS, COUNT_MINES, COUNT_ROWS } from "../../utils/constants";
 const { cells: cellImgs, bombs, bombCount } = images;
 
 const cellsAdapter = createEntityAdapter();
 const initialState = cellsAdapter.getInitialState({
-    rows: 16,
-    columns: 16,
+    rows: COUNT_ROWS,
+    columns: COUNT_COLUMNS,
     minesSet: [],
     openedCells: [],
     isClicked: false,
@@ -26,15 +26,14 @@ const cellsSlice = createSlice({
                     columnIndex < state.columns;
                     columnIndex++
                 ) {
-                    const cellItem = {
+                    cells.push({
                         id: nanoid(),
                         row: rowIndex,
                         column: columnIndex,
                         isMine: false,
                         cellUi: cellImgs.cell,
                         flatIndex: getFlatIndex(rowIndex, columnIndex),
-                    };
-                    cells.push(cellItem);
+                    });
                 }
             }
             cellsAdapter.setAll(state, cells);
@@ -47,11 +46,12 @@ const cellsSlice = createSlice({
                         (item) => state.entities[item].flatIndex
                     )
                 );
-                while (usedIndexes.size < 40) {
+                const entities = Object.values(state.entities);
+                while (usedIndexes.size < COUNT_MINES) {
                     const mineIndex = Math.floor(
                         Math.random() * state.ids.length
                     );
-                    Object.values(state.entities).find((item) => {
+                    entities.find((item) => {
                         if (
                             item.flatIndex === mineIndex &&
                             !startIndexes.has(mineIndex)
@@ -64,11 +64,7 @@ const cellsSlice = createSlice({
                 state.minesSet = Array.from(usedIndexes);
                 state.isClicked = true;
             }
-            if (
-                state.entities[payload].cellUi === cellImgs.cell &&
-                state.openedCells.length <
-                    state.ids.length - state.minesSet.length
-            ) {
+            if (state.entities[payload].cellUi === cellImgs.cell) {
                 const openCells = (id, entities) => {
                     const entity = state.entities[id];
                     if (
@@ -92,7 +88,6 @@ const cellsSlice = createSlice({
                     }
                 };
                 openCells(payload, state.entities);
-                state.countToOpen = state.ids.length - state.openedCells.length;
             }
         },
         toggleFlag: (state, { payload }) => {

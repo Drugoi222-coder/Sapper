@@ -8,7 +8,7 @@ const { smiles } = images;
 const SmileBtn = () => {
     const dispatch = useDispatch();
     const smileIcon = useSelector((state) => state.windowState.smileImg);
-
+    
     const onMouseDown = () => dispatch(setSmileIcon(smiles.startPressed));
     const onMouseUp = () => dispatch(setSmileIcon(smiles.start));
     const handleClick = () => dispatch(startGame());
