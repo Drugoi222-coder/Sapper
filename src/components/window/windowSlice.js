@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { stages } from "../../utils/constants";
+import { COUNT_MINES, stages } from "../../utils/constants";
 import images from "../images/images";
 import { toggleFlag } from "../cell/cellsSlice";
 
@@ -17,7 +17,7 @@ const windowSlice = createSlice({
     reducers: {
         startGame: (state) => {
             state.stage = stages.start;
-            state.flagsCount = 40;
+            state.flagsCount = COUNT_MINES;
         },
         setSmileIcon: (state, action) => {
             state.smileImg = action.payload;

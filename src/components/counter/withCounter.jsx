@@ -2,16 +2,19 @@ import "./counter.css";
 import images from "../images/images";
 import { nanoid } from "@reduxjs/toolkit";
 import { useCallback } from "react";
+
 const { digits } = images;
 
 const withCounter = (Component) => () => {
     const renderDigits = useCallback((count) => {
         const arrayDigits = Array.from(String(count));
         const arrayLength = arrayDigits.length;
+
         if (arrayLength < 3) {
             const diff = 3 - arrayLength;
-            arrayDigits.unshift(...new Array(diff).fill('0'));
+            arrayDigits.unshift(...new Array(diff).fill("0"));
         }
+
         return arrayDigits.map((item) => (
             <img
                 src={digits[item]}
@@ -22,7 +25,7 @@ const withCounter = (Component) => () => {
         ));
     });
 
-    return <Component renderDigits={renderDigits}/>
-}
+    return <Component renderDigits={renderDigits} />;
+};
 
 export default withCounter;

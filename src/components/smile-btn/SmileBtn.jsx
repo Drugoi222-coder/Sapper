@@ -9,15 +9,15 @@ const SmileBtn = () => {
     const dispatch = useDispatch();
     const smileIcon = useSelector((state) => state.windowState.smileImg);
     
-    const onMouseDown = () => dispatch(setSmileIcon(smiles.startPressed));
-    const onMouseUp = () => dispatch(setSmileIcon(smiles.start));
-    const handleClick = () => dispatch(startGame());
+    const onSmileMouseDown = () => dispatch(setSmileIcon(smiles.startPressed));
+    const onSmileMouseUp = () => dispatch(setSmileIcon(smiles.start));
+    const onSmileClick = () => dispatch(startGame());
 
     return (
         <button
-            onMouseUp={onMouseUp}
-            onMouseDown={onMouseDown}
-            onClick={handleClick}
+            onMouseUp={onSmileMouseUp}
+            onMouseDown={onSmileMouseDown}
+            onClick={onSmileClick}
             className="smile-btn"
         >
             <img src={smileIcon} alt="Smile state" className="smile-btn__img" />

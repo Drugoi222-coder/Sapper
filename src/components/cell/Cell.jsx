@@ -14,7 +14,7 @@ const Cell = ({ id }) => {
     const cell = useSelector((state) => state.boardState.entities[id]);
     const countOpened = useSelector((state) => state.boardState.openedCells.length);
 
-    const changeCellImg = () => {
+    const onCellChange = () => {
         if (stage === stages.start && cell.cellUi !== cells.flag) {
             if (cell.isMine) {
                 dispatch(looseGame(id));
@@ -27,7 +27,7 @@ const Cell = ({ id }) => {
         }
     };
 
-    const toggleCurious = (smile) => (e) => {
+    const onSmileToggle = (smile) => (e) => {
         if (
             stage === stages.start &&
             e.button === 0 &&
@@ -37,7 +37,7 @@ const Cell = ({ id }) => {
         }
     };
 
-    const handleFlag = (e) => {
+    const onFlagToggle = (e) => {
         if (stage === stages.start) {
             e.preventDefault();
             dispatch(toggleFlag({ img: cell.cellUi, id }));
@@ -49,10 +49,10 @@ const Cell = ({ id }) => {
             <img
                 className="cell__img"
                 draggable="false"
-                onContextMenu={handleFlag}
-                onMouseUp={toggleCurious(smiles.start)}
-                onMouseDown={toggleCurious(smiles.curious)}
-                onClick={changeCellImg}
+                onContextMenu={onFlagToggle}
+                onMouseUp={onSmileToggle(smiles.start)}
+                onMouseDown={onSmileToggle(smiles.curious)}
+                onClick={onCellChange}
                 src={cell.cellUi}
                 alt="cell"
             />

@@ -17,6 +17,7 @@ const CounterTimer = ({ renderDigits }) => {
                     })),
                 1000
             );
+            
             setTimer((state) => ({ ...state, key: timerId }));
         } else if (stage === stages.win || stage === stages.loose) {
             clearInterval(timer.key);

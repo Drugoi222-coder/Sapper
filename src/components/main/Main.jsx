@@ -16,7 +16,7 @@ const Main = () => {
         }
         return rowsElems;
     };
-
+    
     useEffect(() => {
         dispatch(setCells());
     }, []);
