@@ -1,12 +1,16 @@
 import "./counter.css";
 import images from "../images/images";
 import { nanoid } from "@reduxjs/toolkit";
-import { useCallback } from "react";
+import { FC, useCallback } from "react";
+
+interface IProps {
+    renderDigits: Function;
+}
 
 const { digits } = images;
 
-const withCounter = (Component) => () => {
-    const renderDigits = useCallback((count) => {
+const withCounter = (Component: FC<IProps>) => () => {
+    const renderDigits = useCallback((count: number) => {
         const arrayDigits = Array.from(String(count));
         const arrayLength = arrayDigits.length;
 
@@ -17,13 +21,13 @@ const withCounter = (Component) => () => {
 
         return arrayDigits.map((item) => (
             <img
-                src={digits[item]}
+                src={digits[Number(item)]}
                 key={nanoid()}
                 alt="digit"
                 className="counter__digit"
             />
         ));
-    });
+    }, []);
 
     return <Component renderDigits={renderDigits} />;
 };

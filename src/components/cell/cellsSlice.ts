@@ -1,16 +1,28 @@
-import { createSlice, createEntityAdapter, nanoid } from "@reduxjs/toolkit";
+import {
+    createSlice,
+    createEntityAdapter,
+    nanoid,
+    PayloadAction,
+} from "@reduxjs/toolkit";
 import { looseGame, startGame } from "../window/windowSlice";
-import { generateMines, openBombs, openCells, setInitialBoardState } from "../../utils/utils";
+import {
+    generateMines,
+    openBombs,
+    openCells,
+    setInitialBoardState,
+} from "../../utils/utils";
 import images from "../images/images";
-import { COUNT_COLUMNS, COUNT_ROWS } from "../../utils/constants";
+import { COUNT_COLUMNS, COUNT_ROWS } from "../../ts/constants";
+import { ICell, IState } from "../../ts/interfaces";
 const { cells: cellImgs, bombs } = images;
 
-const cellsAdapter = createEntityAdapter();
+const cellsAdapter = createEntityAdapter<ICell>();
 const initialState = cellsAdapter.getInitialState({
     rows: COUNT_ROWS,
     columns: COUNT_COLUMNS,
-    minesSet: [],
-    openedCells: [],
+    minesSet: [] as string[],
+    openedCells: [] as string[],
+    isClicked: false,
 });
 
 const cellsSlice = createSlice({
@@ -18,7 +30,7 @@ const cellsSlice = createSlice({
     initialState,
     reducers: {
         setCells: (state) => {
-            const cells = [];
+            const cells: ICell[] = [];
             for (let rowIndex = 0; rowIndex < state.rows; rowIndex++) {
                 for (
                     let columnIndex = 0;
@@ -35,23 +47,24 @@ const cellsSlice = createSlice({
             }
             cellsAdapter.setAll(state, cells);
         },
-        setClick: (state, { payload }) => {
+        setClick: (state, { payload }: PayloadAction<string>) => {
+            const cell = state.entities[payload];
             if (!state.isClicked) {
                 generateMines(payload, state);
                 state.isClicked = true;
             }
-            if (state.entities[payload].cellUi === cellImgs.cell) {
+            if (cell && cell.cellUi === cellImgs.cell) {
                 openCells(payload, state);
             }
         },
         toggleFlag: (state, { payload }) => {
             const { id } = payload;
             const entity = state.entities[id];
-            if (entity.cellUi === cellImgs.cell) {
+            if (entity && entity.cellUi === cellImgs.cell) {
                 entity.cellUi = cellImgs.flag;
-            } else if (entity.cellUi === cellImgs.flag) {
+            } else if (entity && entity.cellUi === cellImgs.flag) {
                 entity.cellUi = cellImgs.question;
-            } else if (entity.cellUi === cellImgs.question) {
+            } else if (entity && entity.cellUi === cellImgs.question) {
                 entity.cellUi = cellImgs.cell;
             }
         },
@@ -61,14 +74,18 @@ const cellsSlice = createSlice({
             .addCase(startGame, (state) => {
                 setInitialBoardState(state);
             })
-            .addCase(looseGame, (state, { payload }) => {
+            .addCase(looseGame, (state, { payload }: PayloadAction<string>) => {
                 openBombs(state);
-                state.entities[payload].cellUi = bombs.explode;
+                const entity = state.entities[payload];
+                if (entity) {
+                    entity.cellUi = bombs.explode;
+                }
             });
     },
 });
 
-export const selectors = cellsAdapter.getSelectors((state) => state.boardState);
-export const { setCells, setClicked, setClick, toggleFlag } =
-    cellsSlice.actions;
+export const selectors = cellsAdapter.getSelectors<IState>(
+    (state) => state.boardState
+);
+export const { setCells, setClick, toggleFlag } = cellsSlice.actions;
 export default cellsSlice.reducer;

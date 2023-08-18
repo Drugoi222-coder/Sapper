@@ -2,13 +2,16 @@ import "./smile-btn.css";
 import images from "../images/images";
 import { useDispatch, useSelector } from "react-redux";
 import { startGame, setSmileIcon } from "../window/windowSlice";
+import { IState } from "../../ts/interfaces";
 
 const { smiles } = images;
 
 const SmileBtn = () => {
     const dispatch = useDispatch();
-    const smileIcon = useSelector((state) => state.windowState.smileImg);
-    
+    const smileIcon = useSelector<IState, string>(
+        (state) => state.windowState.smileImg
+    );
+
     const onSmileMouseDown = () => dispatch(setSmileIcon(smiles.startPressed));
     const onSmileMouseUp = () => dispatch(setSmileIcon(smiles.start));
     const onSmileClick = () => dispatch(startGame());

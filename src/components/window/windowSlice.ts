@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { COUNT_MINES, stages } from "../../utils/constants";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { COUNT_MINES, Stages } from "../../ts/constants";
 import images from "../images/images";
 import { toggleFlag } from "../cell/cellsSlice";
 
@@ -16,18 +16,18 @@ const windowSlice = createSlice({
     initialState,
     reducers: {
         startGame: (state) => {
-            state.stage = stages.start;
+            state.stage = Stages.start;
             state.flagsCount = COUNT_MINES;
         },
         setSmileIcon: (state, action) => {
             state.smileImg = action.payload;
         },
         winGame: (state) => {
-            state.stage = stages.win;
+            state.stage = Stages.win;
             state.smileImg = smiles.win;
         },
-        looseGame: (state) => {
-            state.stage = stages.loose;
+        looseGame: (state, action: PayloadAction<string>) => {
+            state.stage = Stages.loose;
             state.smileImg = smiles.loose;
         },
     },
@@ -42,6 +42,6 @@ const windowSlice = createSlice({
     },
 });
 
-export const { startGame, finishGame, setSmileIcon, looseGame, winGame } =
+export const { startGame, setSmileIcon, looseGame, winGame } =
     windowSlice.actions;
 export default windowSlice.reducer;

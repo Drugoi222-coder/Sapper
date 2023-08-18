@@ -10,9 +10,9 @@ const Flags = withCounter(CounterFlags);
 const Header = () => {
     return (
         <div className="header">
-            <Flags/>
-            <SmileBtn/>
-            <Timer/>
+            <Flags />
+            <SmileBtn />
+            <Timer />
         </div>
     );
 };
